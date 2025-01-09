@@ -2,6 +2,7 @@ package com.mindhub.todolist.services.impl;
 
 import com.mindhub.todolist.dtos.AppUserDTO;
 import com.mindhub.todolist.entities.AppUser;
+import com.mindhub.todolist.exceptions.UserNotFoundException;
 import com.mindhub.todolist.repositories.AppUserRepository;
 import com.mindhub.todolist.services.AppUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,9 +29,9 @@ public class AppUserServiceImpl implements AppUserService {
     }
 
     @Override
-    public AppUserDTO getUserById(Long id) {
+    public AppUserDTO getUserById(Long id) throws UserNotFoundException {
         AppUser user = appUserRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException(id));
         return new AppUserDTO(user);
     }
 

@@ -32,7 +32,7 @@ public class TodolistApplication {
 				System.out.println(firstUser);
 
 				Task taskTwo = new Task("comprar verdura","Papa 2kg", TaskStatus.PENDING);
-				Task taskThree = new Task("comprar bebida","Fanta 3L", TaskStatus.PENDING);
+				Task taskThree = new Task("comprar bebida","Fanta 3L", TaskStatus.COMPLETED);
 
 				taskRepository.save(taskOne);
 				firstUser.addTask(taskTwo);

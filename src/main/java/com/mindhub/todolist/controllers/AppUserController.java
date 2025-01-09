@@ -1,6 +1,7 @@
 package com.mindhub.todolist.controllers;
 
 import com.mindhub.todolist.dtos.AppUserDTO;
+import com.mindhub.todolist.exceptions.UserNotFoundException;
 import com.mindhub.todolist.services.AppUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -8,7 +9,6 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -40,7 +40,7 @@ public class AppUserController {
             @ApiResponse(responseCode = "404", description = "User not found")
     })
     @GetMapping("/{id}")
-    public AppUserDTO getUserById(@PathVariable Long id) {
+    public AppUserDTO getUserById(@PathVariable Long id) throws UserNotFoundException {
         return appUserService.getUserById(id);
     }
 

@@ -2,6 +2,9 @@ package com.mindhub.todolist.controllers;
 
 import com.mindhub.todolist.dtos.CreateTaskDTO;
 import com.mindhub.todolist.dtos.GetTaskDTO;
+import com.mindhub.todolist.entities.TaskStatus;
+import com.mindhub.todolist.exceptions.TaskNotFoundException;
+import com.mindhub.todolist.exceptions.UserNotFoundException;
 import com.mindhub.todolist.services.TaskService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -29,7 +32,10 @@ public class TaskController {
                     content = @Content(array = @ArraySchema(schema = @Schema(implementation = GetTaskDTO.class))))
     })
     @GetMapping
-    public List<GetTaskDTO> getAllTasks() {
+    public List<GetTaskDTO> getAllTasks(@RequestParam(required = false) TaskStatus status) {
+        if (status != null) {
+            return taskService.getAllTasksByStatus(status);
+        }
         return taskService.getAllTasks();
     }
 
@@ -40,7 +46,7 @@ public class TaskController {
             @ApiResponse(responseCode = "404", description = "Task not found")
     })
     @GetMapping("/{id}")
-    public GetTaskDTO getTaskById(@PathVariable Long id) {
+    public GetTaskDTO getTaskById(@PathVariable Long id) throws TaskNotFoundException {
         return taskService.getTaskById(id);
     }
 
@@ -50,7 +56,7 @@ public class TaskController {
                     content = @Content(schema = @Schema(implementation = GetTaskDTO.class)))
     })
     @PostMapping
-    public GetTaskDTO createTask(@RequestBody CreateTaskDTO newTaskDTO) {
+    public GetTaskDTO createTask(@RequestBody CreateTaskDTO newTaskDTO) throws UserNotFoundException {
         return taskService.createTask(newTaskDTO);
     }
 
@@ -61,8 +67,8 @@ public class TaskController {
             @ApiResponse(responseCode = "404", description = "Task not found")
     })
     @PutMapping("/{id}")
-    public GetTaskDTO updateTask(@PathVariable Long id, @RequestBody GetTaskDTO getTaskDTO) {
-        return taskService.updateTask(id, getTaskDTO);
+    public GetTaskDTO updateTask(@PathVariable Long id, @RequestBody CreateTaskDTO updateTaskDTO) throws TaskNotFoundException {
+        return taskService.updateTask(id, updateTaskDTO);
     }
 
     @Operation(summary = "Delete a task", description = "Remove a task from the system by its ID.")
@@ -71,7 +77,7 @@ public class TaskController {
             @ApiResponse(responseCode = "404", description = "Task not found")
     })
     @DeleteMapping("/{id}")
-    public void deleteTask(@PathVariable Long id) {
+    public void deleteTask(@PathVariable Long id) throws TaskNotFoundException {
         taskService.deleteTask(id);
     }
 }
