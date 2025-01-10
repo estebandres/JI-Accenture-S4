@@ -7,6 +7,7 @@ import com.mindhub.todolist.exceptions.TaskNotFoundException;
 import com.mindhub.todolist.exceptions.UserNotFoundException;
 import com.mindhub.todolist.services.TaskService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -32,7 +33,8 @@ public class TaskController {
                     content = @Content(array = @ArraySchema(schema = @Schema(implementation = GetTaskDTO.class))))
     })
     @GetMapping
-    public List<GetTaskDTO> getAllTasks(@RequestParam(required = false) TaskStatus status) {
+    public List<GetTaskDTO> getAllTasks(@Parameter(description = "Task Status", required = false, example = "PENDING")
+                                            @RequestParam(required = false) TaskStatus status) {
         if (status != null) {
             return taskService.getAllTasksByStatus(status);
         }
@@ -46,11 +48,13 @@ public class TaskController {
             @ApiResponse(responseCode = "404", description = "Task not found")
     })
     @GetMapping("/{id}")
-    public GetTaskDTO getTaskById(@PathVariable Long id) throws TaskNotFoundException {
+    public GetTaskDTO getTaskById(@Parameter(description = "ID of the task to retrieve", required = true, example = "12")
+                                      @PathVariable Long id) throws TaskNotFoundException {
         return taskService.getTaskById(id);
     }
 
     @Operation(summary = "Create a new task", description = "Add a new task to the system.")
+
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Task created successfully",
                     content = @Content(schema = @Schema(implementation = GetTaskDTO.class)))
@@ -63,8 +67,8 @@ public class TaskController {
     @Operation(summary = "Update an existing task", description = "Update the details of an existing task.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Task updated successfully",
-                    content = @Content(schema = @Schema(implementation = GetTaskDTO.class))),
-            @ApiResponse(responseCode = "404", description = "Task not found")
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = GetTaskDTO.class))),
+            @ApiResponse(responseCode = "404", description = "Task not found", content = @Content(mediaType = "text/plain"))
     })
     @PutMapping("/{id}")
     public GetTaskDTO updateTask(@PathVariable Long id, @RequestBody CreateTaskDTO updateTaskDTO) throws TaskNotFoundException {

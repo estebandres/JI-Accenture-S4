@@ -15,6 +15,6 @@ public class ExceptionsHandler {
 
     @ExceptionHandler(TaskNotFoundException.class)
     public ResponseEntity<String> handleTaskNotFoundException(TaskNotFoundException taskNotFoundException) {
-        return new ResponseEntity<>(taskNotFoundException.getMessage(), HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(taskNotFoundException.getMessage(), TaskNotFoundException.ERROR_CODE);
     }
 }
