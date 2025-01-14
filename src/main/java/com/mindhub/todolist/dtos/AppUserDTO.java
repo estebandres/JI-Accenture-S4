@@ -1,6 +1,6 @@
 package com.mindhub.todolist.dtos;
 
-import com.mindhub.todolist.entities.AppUser;
+import com.mindhub.todolist.models.AppUser;
 
 import java.util.List;
 import java.util.stream.Collectors;

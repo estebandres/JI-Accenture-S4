@@ -1,19 +1,24 @@
 package com.mindhub.todolist;
 
-import com.mindhub.todolist.entities.AppUser;
-import com.mindhub.todolist.entities.Task;
-import com.mindhub.todolist.entities.TaskStatus;
-import com.mindhub.todolist.entities.UserRole;
+import com.mindhub.todolist.models.AppUser;
+import com.mindhub.todolist.models.Task;
+import com.mindhub.todolist.models.TaskStatus;
+import com.mindhub.todolist.models.UserRole;
 import com.mindhub.todolist.repositories.AppUserRepository;
 import com.mindhub.todolist.repositories.TaskRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @SpringBootApplication
 public class TodolistApplication {
+
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
 	public static void main(String[] args) {
 		SpringApplication.run(TodolistApplication.class, args);
@@ -23,7 +28,7 @@ public class TodolistApplication {
 	public CommandLineRunner initData(@Value("${jwt.secret}") String secretKey,  AppUserRepository appUserRepository, TaskRepository taskRepository) {
 		return args -> {
 			System.out.println("This is the secret key: " + secretKey);
-			AppUser firstUser = new AppUser("Steven", "12345", "steven@gmail.com");
+			AppUser firstUser = new AppUser("Steven", passwordEncoder.encode("12345"), "steven@gmail.com");
 			appUserRepository.save(firstUser);
 			System.out.println(firstUser);
 
@@ -43,7 +48,7 @@ public class TodolistApplication {
 			taskRepository.save(taskThree);
 			taskRepository.save(taskTwo);
 
-			AppUser secondUser = new AppUser("Carlito", "3456", "charles@gmail.com");
+			AppUser secondUser = new AppUser("Carlito", passwordEncoder.encode("3456"), "charles@gmail.com");
 			secondUser.setRole(UserRole.ADMIN);
 			System.out.println(secondUser);
 			appUserRepository.save(secondUser);

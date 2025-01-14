@@ -1,7 +1,7 @@
 package com.mindhub.todolist.repositories;
 
-import com.mindhub.todolist.entities.Task;
-import com.mindhub.todolist.entities.TaskStatus;
+import com.mindhub.todolist.models.Task;
+import com.mindhub.todolist.models.TaskStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

@@ -2,9 +2,9 @@ package com.mindhub.todolist.services.impl;
 
 import com.mindhub.todolist.dtos.CreateTaskDTO;
 import com.mindhub.todolist.dtos.GetTaskDTO;
-import com.mindhub.todolist.entities.AppUser;
-import com.mindhub.todolist.entities.Task;
-import com.mindhub.todolist.entities.TaskStatus;
+import com.mindhub.todolist.models.AppUser;
+import com.mindhub.todolist.models.Task;
+import com.mindhub.todolist.models.TaskStatus;
 import com.mindhub.todolist.exceptions.TaskNotFoundException;
 import com.mindhub.todolist.exceptions.UserNotFoundException;
 import com.mindhub.todolist.repositories.AppUserRepository;

@@ -1,4 +1,4 @@
-package com.mindhub.todolist.entities;
+package com.mindhub.todolist.models;
 
 import jakarta.persistence.*;
 

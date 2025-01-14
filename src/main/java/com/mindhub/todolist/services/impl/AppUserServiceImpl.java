@@ -1,7 +1,9 @@
 package com.mindhub.todolist.services.impl;
 
 import com.mindhub.todolist.dtos.AppUserDTO;
-import com.mindhub.todolist.entities.AppUser;
+import com.mindhub.todolist.dtos.RegisterUserDTO;
+import com.mindhub.todolist.exceptions.UserAlreadyExistsException;
+import com.mindhub.todolist.models.AppUser;
 import com.mindhub.todolist.exceptions.UserNotFoundException;
 import com.mindhub.todolist.repositories.AppUserRepository;
 import com.mindhub.todolist.services.AppUserService;
@@ -61,5 +63,19 @@ public class AppUserServiceImpl implements AppUserService {
             throw new RuntimeException("User not found");
         }
         appUserRepository.deleteById(id);
+    }
+
+    @Override
+    public AppUserDTO registerNewUser(RegisterUserDTO registerUserDTO) throws UserAlreadyExistsException {
+        if(appUserRepository.existsAppUserByEmail(registerUserDTO.email())){
+            throw new UserAlreadyExistsException(registerUserDTO.email());
+        }
+        AppUser user = new AppUser();
+        user.setEmail(registerUserDTO.email());
+        user.setUsername(registerUserDTO.username());
+        user.setPassword(registerUserDTO.password());
+        AppUser savedUser = appUserRepository.save(user);
+
+        return new AppUserDTO(savedUser);
     }
 }

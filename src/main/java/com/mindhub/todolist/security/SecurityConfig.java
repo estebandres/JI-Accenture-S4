@@ -9,6 +9,7 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -37,12 +38,15 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 // Disable CSRF for REST APIs
+                .headers(configurer -> configurer.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
                 .authorizeHttpRequests( authorizeRequests ->
                         authorizeRequests
                                 .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html" ,"/h2-console/**").permitAll()
                                 .requestMatchers( "/api/auth/**", "/index.html" ).permitAll()
-                                .requestMatchers("/api/user/**").hasAuthority("USER")
-                                .requestMatchers("/api/admin/**").hasAuthority("ADMIN")// Allow public access to specific endpoints
+                                .requestMatchers("/api/users/**").hasAuthority("ADMIN")
+                                .requestMatchers("/api/tasks/**").hasAuthority("ADMIN")
+                                .requestMatchers("/api/users/self").hasAuthority("USER")
+                                .requestMatchers("/api/tasks/mine").hasAuthority("USER")
                                 .anyRequest().denyAll() // All other requests must be authenticated
                 )
                 .formLogin(AbstractHttpConfigurer::disable)

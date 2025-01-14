@@ -1,7 +1,7 @@
 package com.mindhub.todolist.dtos;
 
-import com.mindhub.todolist.entities.Task;
-import com.mindhub.todolist.entities.TaskStatus;
+import com.mindhub.todolist.models.Task;
+import com.mindhub.todolist.models.TaskStatus;
 
 public class GetTaskDTO {
     private Long id;
