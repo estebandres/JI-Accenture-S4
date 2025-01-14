@@ -1,6 +1,7 @@
 package com.mindhub.todolist.controllers;
 
 import com.mindhub.todolist.dtos.AppUserDTO;
+import com.mindhub.todolist.dtos.UpdateAppUserDto;
 import com.mindhub.todolist.exceptions.UserNotFoundException;
 import com.mindhub.todolist.services.AppUserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -9,6 +10,9 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import org.apache.coyote.BadRequestException;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -73,5 +77,26 @@ public class AppUserController {
     @DeleteMapping("/{id}")
     public void deleteUser(@PathVariable Long id) {
         appUserService.deleteUser(id);
+    }
+
+    @GetMapping("/self")
+    public AppUserDTO getLoggedInUserData(Authentication authentication) throws UserNotFoundException {
+        return appUserService.getLoggedInUserInfo(authentication.getName());
+    }
+
+    @PatchMapping("/self")
+    public AppUserDTO updateLoggedInUserData(Authentication authentication, @RequestBody UpdateAppUserDto updateAppUserDto) throws UserNotFoundException {
+        return this.appUserService.updateLoggedInUserInfo(authentication.getName(), updateAppUserDto);
+    }
+
+    @PutMapping("/self")
+    public AppUserDTO replaceLoggedInUserData(Authentication authentication, @RequestBody UpdateAppUserDto updateAppUserDto) throws UserNotFoundException, BadRequestException {
+        return this.appUserService.replaceLoggedInUserInfo(authentication.getName(), updateAppUserDto);
+    }
+
+    @DeleteMapping("/self")
+    public ResponseEntity<String> deleteLoggedInUserData(Authentication authentication) throws UserNotFoundException {
+        appUserService.deleteLoggedInUser(authentication.getName());
+        return ResponseEntity.ok("User deleted successfully");
     }
 }

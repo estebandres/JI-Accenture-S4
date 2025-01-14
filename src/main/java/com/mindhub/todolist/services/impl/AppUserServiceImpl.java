@@ -2,25 +2,31 @@ package com.mindhub.todolist.services.impl;
 
 import com.mindhub.todolist.dtos.AppUserDTO;
 import com.mindhub.todolist.dtos.RegisterUserDTO;
+import com.mindhub.todolist.dtos.UpdateAppUserDto;
 import com.mindhub.todolist.exceptions.UserAlreadyExistsException;
 import com.mindhub.todolist.models.AppUser;
 import com.mindhub.todolist.exceptions.UserNotFoundException;
 import com.mindhub.todolist.repositories.AppUserRepository;
 import com.mindhub.todolist.services.AppUserService;
+import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.MissingFormatArgumentException;
 import java.util.stream.Collectors;
 
 @Service
 public class AppUserServiceImpl implements AppUserService {
 
     private final AppUserRepository appUserRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public AppUserServiceImpl(AppUserRepository appUserRepository) {
+    public AppUserServiceImpl(PasswordEncoder passwordEncoder, AppUserRepository appUserRepository) {
         this.appUserRepository = appUserRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -76,6 +82,53 @@ public class AppUserServiceImpl implements AppUserService {
         user.setPassword(registerUserDTO.password());
         AppUser savedUser = appUserRepository.save(user);
 
+        return new AppUserDTO(savedUser);
+    }
+
+    @Override
+    public AppUserDTO getLoggedInUserInfo(String email) throws UserNotFoundException {
+        AppUser user = this.appUserRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException(email));
+        return new AppUserDTO(user);
+    }
+
+    @Override
+    public AppUserDTO updateLoggedInUserInfo(String email, UpdateAppUserDto updateAppUserDto) throws UserNotFoundException {
+        AppUser user = this.appUserRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException(email));
+        if (updateAppUserDto.username() != null) {
+            user.setUsername(updateAppUserDto.username());
+        }
+        if (updateAppUserDto.email() != null) {
+            user.setEmail(updateAppUserDto.email());
+        }
+        if (updateAppUserDto.password() != null) {
+            user.setPassword(passwordEncoder.encode(updateAppUserDto.password()));
+        }
+        AppUser savedUser = appUserRepository.save(user);
+        return new AppUserDTO(savedUser);
+    }
+
+    @Override
+    public void deleteLoggedInUser(String email) throws UserNotFoundException {
+        AppUser user = this.appUserRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException(email));
+        appUserRepository.delete(user);
+    }
+
+    @Override
+    public AppUserDTO replaceLoggedInUserInfo(String email, UpdateAppUserDto updateAppUserDto) throws UserNotFoundException, BadRequestException {
+        AppUser user = this.appUserRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException(email));
+        if (updateAppUserDto.username() == null) {
+            throw new BadRequestException("Missing username attribute");
+        }
+        if (updateAppUserDto.email() == null) {
+            throw new BadRequestException("Missing email attribute");
+        }
+        if (updateAppUserDto.password() == null) {
+            throw new BadRequestException("Missing password attribute");
+        }
+        user.setUsername(updateAppUserDto.username());
+        user.setEmail(updateAppUserDto.email());
+        user.setPassword(passwordEncoder.encode(updateAppUserDto.password()));
+        AppUser savedUser = appUserRepository.save(user);
         return new AppUserDTO(savedUser);
     }
 }

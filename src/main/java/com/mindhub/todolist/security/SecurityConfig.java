@@ -43,10 +43,11 @@ public class SecurityConfig {
                         authorizeRequests
                                 .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html" ,"/h2-console/**").permitAll()
                                 .requestMatchers( "/api/auth/**", "/index.html" ).permitAll()
-                                .requestMatchers("/api/users/**").hasAuthority("ADMIN")
-                                .requestMatchers("/api/tasks/**").hasAuthority("ADMIN")
                                 .requestMatchers("/api/users/self").hasAuthority("USER")
                                 .requestMatchers("/api/tasks/mine").hasAuthority("USER")
+                                .requestMatchers("/api/tasks/mine/*").hasAuthority("USER")
+                                .requestMatchers("/api/users/**").hasAuthority("ADMIN")
+                                .requestMatchers("/api/tasks/**").hasAuthority("ADMIN")
                                 .anyRequest().denyAll() // All other requests must be authenticated
                 )
                 .formLogin(AbstractHttpConfigurer::disable)

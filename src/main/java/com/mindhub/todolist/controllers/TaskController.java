@@ -13,6 +13,8 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import org.apache.coyote.BadRequestException;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -83,5 +85,25 @@ public class TaskController {
     @DeleteMapping("/{id}")
     public void deleteTask(@PathVariable Long id) throws TaskNotFoundException {
         taskService.deleteTask(id);
+    }
+
+    @GetMapping("/mine")
+    public List<GetTaskDTO> getAllMyTasks(Authentication authentication) throws UserNotFoundException {
+        return taskService.getLoggedInUserTasks(authentication.getName());
+    }
+
+    @GetMapping("/mine/{id}")
+    public GetTaskDTO getMyTask(Authentication authentication, @PathVariable Long id) throws UserNotFoundException, TaskNotFoundException {
+        return taskService.getLoggedInUserTaskById(authentication.getName(),id);
+    }
+
+    @PostMapping("mine")
+    public GetTaskDTO createMineTask(Authentication authentication, @RequestBody CreateTaskDTO createTaskDTO) throws UserNotFoundException {
+        return taskService.createTaskForLoggedInUser(createTaskDTO, authentication.getName());
+    }
+
+    @PutMapping("mine/{id}")
+    public GetTaskDTO updateMineTask(Authentication authentication, @PathVariable Long id, @RequestBody CreateTaskDTO createTaskDTO) throws UserNotFoundException, TaskNotFoundException, BadRequestException {
+        return taskService.updateTaskForLoggedInUser(authentication.getName(),id,createTaskDTO);
     }
 }

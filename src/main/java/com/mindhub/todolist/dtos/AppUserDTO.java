@@ -18,6 +18,8 @@ public class AppUserDTO {
         this.tasks = appUser.getTasks().stream().map(GetTaskDTO::new).collect(Collectors.toList());
     }
 
+    public AppUserDTO() {}
+
     public Long getId() {
         return id;
     }
