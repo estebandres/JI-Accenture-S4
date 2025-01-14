@@ -21,6 +21,10 @@ public class AppUser {
     @Column(nullable = false, unique = true)
     private String email;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private UserRole role = UserRole.USER;
+
     @OneToMany(mappedBy = "user",
             cascade = CascadeType.ALL,
             orphanRemoval = true)
@@ -75,6 +79,14 @@ public class AppUser {
         this.tasks = tasks;
     }
 
+    public UserRole getRole() {
+        return role;
+    }
+
+    public void setRole(UserRole role) {
+        this.role = role;
+    }
+
     @Override
     public String toString() {
         return "AppUser{" +
@@ -82,6 +94,7 @@ public class AppUser {
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", email='" + email + '\'' +
+                ", role=" + role +
                 ", tasks=" + tasks +
                 '}';
     }
