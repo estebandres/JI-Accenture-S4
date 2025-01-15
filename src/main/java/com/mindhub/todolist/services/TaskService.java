@@ -14,11 +14,11 @@ public interface TaskService {
     List<GetTaskDTO> getAllTasks();
     List<GetTaskDTO> getAllTasksByStatus(TaskStatus status);
     GetTaskDTO getTaskById(Long id) throws TaskNotFoundException;
-    GetTaskDTO createTask(@Valid CreateTaskDTO newTaskDTO) throws UserNotFoundException;
-    GetTaskDTO updateTask(Long id, @Valid CreateTaskDTO updateTaskDTO) throws TaskNotFoundException;
+    GetTaskDTO createTask( CreateTaskDTO newTaskDTO) throws UserNotFoundException;
+    GetTaskDTO updateTask(Long id, CreateTaskDTO updateTaskDTO) throws TaskNotFoundException;
     void deleteTask(Long id) throws TaskNotFoundException;
     List<GetTaskDTO> getLoggedInUserTasks(String email) throws UserNotFoundException;
-    GetTaskDTO createTaskForLoggedInUser(@Valid CreateTaskDTO createTaskDTO, String email) throws UserNotFoundException;
-    GetTaskDTO updateTaskForLoggedInUser(String email, Long id, @Valid CreateTaskDTO createTaskDTO) throws UserNotFoundException, TaskNotFoundException, BadRequestException;
+    GetTaskDTO createTaskForLoggedInUser( CreateTaskDTO createTaskDTO, String email) throws UserNotFoundException;
+    GetTaskDTO updateTaskForLoggedInUser(String email, Long id, CreateTaskDTO createTaskDTO) throws UserNotFoundException, TaskNotFoundException;
     GetTaskDTO getLoggedInUserTaskById(String email, Long id) throws UserNotFoundException, TaskNotFoundException;
 }

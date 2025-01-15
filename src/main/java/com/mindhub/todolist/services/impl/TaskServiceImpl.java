@@ -19,7 +19,6 @@ import org.springframework.validation.annotation.Validated;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Validated
 @Service
 public class TaskServiceImpl implements TaskService {
 
@@ -107,10 +106,10 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public GetTaskDTO updateTaskForLoggedInUser(String email, Long id, CreateTaskDTO createTaskDTO) throws UserNotFoundException, TaskNotFoundException, BadRequestException {
-        if (createTaskDTO.title()==null){throw new BadRequestException("Title missing.");}
-        if (createTaskDTO.status()==null){throw new BadRequestException("Status missing.");}
-        if (createTaskDTO.description()==null){throw new BadRequestException("Description missing.");}
+    public GetTaskDTO updateTaskForLoggedInUser(String email, Long id, CreateTaskDTO createTaskDTO) throws UserNotFoundException, TaskNotFoundException {
+//        if (createTaskDTO.title()==null){throw new BadRequestException("Title missing.");}
+//        if (createTaskDTO.status()==null){throw new BadRequestException("Status missing.");}
+//        if (createTaskDTO.description()==null){throw new BadRequestException("Description missing.");}
         AppUser user = this.appUserRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException(email));
         return user.getTasks().stream()
                 .filter(task -> task.getId().equals(id))
