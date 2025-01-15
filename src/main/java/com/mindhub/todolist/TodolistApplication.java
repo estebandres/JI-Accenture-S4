@@ -28,7 +28,7 @@ public class TodolistApplication {
 	public CommandLineRunner initData(@Value("${jwt.secret}") String secretKey,  AppUserRepository appUserRepository, TaskRepository taskRepository) {
 		return args -> {
 			System.out.println("This is the secret key: " + secretKey);
-			AppUser firstUser = new AppUser("Steven", passwordEncoder.encode("12345"), "steven@gmail.com");
+			AppUser firstUser = new AppUser("Steven", passwordEncoder.encode("Steve123456789!"), "steven@gmail.com");
 			appUserRepository.save(firstUser);
 			System.out.println(firstUser);
 
@@ -48,7 +48,7 @@ public class TodolistApplication {
 			taskRepository.save(taskThree);
 			taskRepository.save(taskTwo);
 
-			AppUser secondUser = new AppUser("Carlito", passwordEncoder.encode("3456"), "charles@gmail.com");
+			AppUser secondUser = new AppUser("Carlito", passwordEncoder.encode("Carlito123456789!"), "charles@gmail.com");
 			secondUser.setRole(UserRole.ADMIN);
 			System.out.println(secondUser);
 			appUserRepository.save(secondUser);

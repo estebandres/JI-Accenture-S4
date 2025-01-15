@@ -1,3 +1,8 @@
 package com.mindhub.todolist.dtos;
 
-public record CreateTaskUserDTO(Long id){}
+import jakarta.validation.constraints.NotNull;
+
+public record CreateTaskUserDTO(
+        @NotNull
+        Long id
+){}

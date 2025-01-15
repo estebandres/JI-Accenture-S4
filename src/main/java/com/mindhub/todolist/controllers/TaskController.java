@@ -13,11 +13,13 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.*;
 import org.apache.coyote.BadRequestException;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/tasks")
@@ -91,6 +93,7 @@ public class TaskController {
     public List<GetTaskDTO> getAllMyTasks(Authentication authentication) throws UserNotFoundException {
         return taskService.getLoggedInUserTasks(authentication.getName());
     }
+
 
     @GetMapping("/mine/{id}")
     public GetTaskDTO getMyTask(Authentication authentication, @PathVariable Long id) throws UserNotFoundException, TaskNotFoundException {

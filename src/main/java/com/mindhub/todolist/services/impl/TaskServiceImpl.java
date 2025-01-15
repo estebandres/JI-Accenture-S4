@@ -10,13 +10,16 @@ import com.mindhub.todolist.exceptions.UserNotFoundException;
 import com.mindhub.todolist.repositories.AppUserRepository;
 import com.mindhub.todolist.repositories.TaskRepository;
 import com.mindhub.todolist.services.TaskService;
+import jakarta.validation.Valid;
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Validated
 @Service
 public class TaskServiceImpl implements TaskService {
 
