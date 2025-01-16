@@ -17,15 +17,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @SpringBootApplication
 public class TodolistApplication {
 
-	@Autowired
-	private PasswordEncoder passwordEncoder;
-
 	public static void main(String[] args) {
 		SpringApplication.run(TodolistApplication.class, args);
 	}
 
 	@Bean
-	public CommandLineRunner initData(@Value("${jwt.secret}") String secretKey,  AppUserRepository appUserRepository, TaskRepository taskRepository) {
+	public CommandLineRunner initData(@Value("${jwt.secret}") String secretKey,  AppUserRepository appUserRepository, TaskRepository taskRepository, PasswordEncoder passwordEncoder) {
 		return args -> {
 			System.out.println("This is the secret key: " + secretKey);
 			AppUser firstUser = new AppUser("Steven", passwordEncoder.encode("Steve123456789!"), "steven@gmail.com");
