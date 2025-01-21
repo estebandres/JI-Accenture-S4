@@ -98,8 +98,8 @@ class TaskServiceImplTest {
     }
 
     @Test
-    public void test_update_logged_in_user_task_success() throws UserNotFoundException, TaskNotFoundException {
-        // Arrange
+    public void given_existent_user_and_task_when_update_task_then_update_success() throws UserNotFoundException, TaskNotFoundException {
+        // GIVEN
         String email = "test@test.com";
         Long taskId = 1L;
 
@@ -118,10 +118,11 @@ class TaskServiceImplTest {
         when(appUserRepository.findByEmail(email)).thenReturn(Optional.of(user));
         when(taskRepository.save(any(Task.class))).thenReturn(task);
 
-        // Act
+        // WHEN
         GetTaskDTO result = taskService.updateTaskForLoggedInUser(email, taskId, updateDTO);
 
-        // Assert
+        // THEN
+        assertEquals(task.getId(), result.getId());
         assertEquals("New Title", result.getTitle());
         assertEquals("New Description", result.getDescription());
         assertEquals(TaskStatus.IN_PROGRESS, result.getStatus());
@@ -129,8 +130,8 @@ class TaskServiceImplTest {
     }
 
     @Test
-    public void test_update_task_for_logged_in_user_but_user_not_found() {
-        // Arrange
+    public void given_nonexistent_user_when_update_task_then_exception_on_user() {
+        // GIVEN
         String nonExistentEmail = "nonexistent@test.com";
         Long taskId = 1L;
 
@@ -140,10 +141,10 @@ class TaskServiceImplTest {
                 TaskStatus.PENDING,
                 null
         );
-
+        // WHEN
         when(appUserRepository.findByEmail(nonExistentEmail)).thenReturn(Optional.empty());
 
-        // Act & Assert
+        // THEN
         assertThrows(UserNotFoundException.class, () ->
                 taskService.updateTaskForLoggedInUser(nonExistentEmail, taskId, updateDTO)
         );
@@ -152,8 +153,8 @@ class TaskServiceImplTest {
     }
 
     @Test
-    public void test_update_task_for_logged_in_user_but_task_not_found() {
-        // Arrange
+    public void given_existent_user_and_nonexistent_task_when_update_task_then_exception_on_task() {
+        // GIVEN
         String email = "test@test.com";
         Long nonExistentTaskId = 999L;
 
@@ -165,7 +166,6 @@ class TaskServiceImplTest {
         );
 
         AppUser user = new AppUser("testuser", "password", email);
-        when(appUserRepository.findByEmail(email)).thenReturn(Optional.of(user));
         List<Task> tasks = new ArrayList<>();
         Task task1 = new Task("Old Title", "Old Description", TaskStatus.PENDING);
         ReflectionTestUtils.setField(task1, "id", 1L);
@@ -174,12 +174,15 @@ class TaskServiceImplTest {
         tasks.add(task1);
         tasks.add(task2);
         user.setTasks(tasks);
+        when(appUserRepository.findByEmail(email)).thenReturn(Optional.of(user));
 
-        // Act & Assert
+
+        // WHEN
         assertThrows(TaskNotFoundException.class, () ->
                 taskService.updateTaskForLoggedInUser(email, nonExistentTaskId, updateDTO)
         );
 
+        // THEN
         verify(taskRepository, never()).save(any(Task.class));
     }
 }

@@ -16,6 +16,7 @@ public class GetTaskDTO {
         this.status = task.getStatus();
     }
 
+    public GetTaskDTO() {}
     public Long getId() {
         return id;
     }
